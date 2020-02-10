@@ -6,7 +6,6 @@
 		});
 		return getByAxios;
 	}
-
 	function createAndAppend(name, parent, options = {}) {
 		const elem = document.createElement(name);
 		parent.appendChild(elem);
