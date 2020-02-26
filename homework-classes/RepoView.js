@@ -21,27 +21,30 @@
 		render(repo) {
 			// TODO: replace this comment and the console.log with your own code
 			this.container.innerHTML = '';
+			const repoContainer = document.querySelector('.repo-container');
+			const table = createAndAppend('table', repoContainer);
+			table.className = 'repo-table';
+			const repoData = [
+				{ key: 'Repository:', value: repo.name },
+				{ key: 'Description:', value: repo.description },
+				{ key: 'Forks:', value: repo.fork },
+				{ key: 'Updated:', value: repo.updated_at }
+			];
 
-			const table = createAndAppend('table', this.container);
+			for (let i = 0; i < repoData.length; i++) {
+				let tr = createAndAppend('tr', table);
+				createAndAppend('th', tr, { text: repoData[i].key });
 
-			table.innerHTML += `
-			  <tr>
-				<td> <strong> Repository: </td> </strong>
-				<td><a href='${repo.html_url}' target='_blank'>${repo.name}</a></td>
-			  </tr>
-			  <tr>
-				<td> <strong>Description: </td> </strong>
-				<td>${repo.description}</td>
-			  </tr>
-			  <tr>
-				<td> <strong> Forks:</td> <strong>
-				<td>${repo.forks}</td>
-			  </tr>
-			  <tr>
-				<td> <strong> Updated:</td> <strong>
-				<td>${repo.updated_at}</td>
-			  </tr>
-			`;
+				if (i === 0) {
+					createAndAppend('a', tr, {
+						text: repo.name,
+						href: repo.html_url,
+						target: '_blank'
+					});
+				} else {
+					createAndAppend('td', tr, { text: repoData[i].value });
+				}
+			}
 
 			console.log('RepoView', repo);
 		}

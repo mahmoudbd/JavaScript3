@@ -1,10 +1,13 @@
 'use strict';
 {
 	async function fetchJSON(url) {
-		const getByAxios = await axios.get(url).then((res) => {
-			return res.data;
-		});
-		return getByAxios;
+		try {
+			const res = await axios.get(url);
+			const data = await res;
+			return data;
+		} catch (err) {
+			console.log(`There is an error ${err}`);
+		}
 	}
 	function createAndAppend(name, parent, options = {}) {
 		const elem = document.createElement(name);
@@ -23,11 +26,7 @@
 		const li = createAndAppend('li', ul);
 		const table = createAndAppend('table', li);
 
-		//const titles = [ 'Repository:', 'Description:', 'Forks:', 'Updated:' ];
-		//const keys = [ 'name', 'description', 'forks', 'update_at' ];
-
-		//for (let i of title ) { try to use loop of
-		let tr = createAndAppend('tr', table); // i can not use const variable  here
+		let tr = createAndAppend('tr', table);
 		//Repository
 		createAndAppend('th', tr, { text: 'Repository:' });
 		let td = createAndAppend('td', tr);
@@ -52,10 +51,10 @@
 
 	async function contributorDetail(url) {
 		let select = document.createElement('select');
-		const fetchAxios = await axios.get(url).then((res) => {
-			return res.data;
-		});
-		let byData = fetchAxios;
+		const fetchData = await axios.get(url);
+		const data = await fetchData.data;
+		console.log(data);
+		let byData = data;
 		byData.sort((a, b) => a.name.localeCompare(b.name));
 		byData.forEach((repo, index) => {
 			let option = document.createElement('option');
@@ -72,23 +71,24 @@
 			while (sectionContributor.hasChildNodes()) {
 				sectionContributor.removeChild(sectionContributor.lastChild);
 			}
-
-			fetch(`https://api.github.com/repos/HackYourFuture/
-				${byData[select.value].name}/contributors`)
-				.then((response) => response.json())
-				.then((data) => {
-					data.forEach((ele) => {
-						let contributorDiv = document.createElement('div');
-						contributorDiv.id = 'contributorDiv';
-						let h4 = createAndAppend('h4', contributorDiv);
-						let h5 = createAndAppend('h5', contributorDiv);
-						let img = createAndAppend('img', contributorDiv);
-						h4.innerText = ele.login;
-						h5.innerText = ele.contributions;
-						img.src = ele.avatar_url;
-						sectionContributor.appendChild(contributorDiv);
-					});
+			async function getData() {
+				const res = await axios.get(`https://api.github.com/repos/HackYourFuture/
+				${byData[select.value].name}/contributors`);
+				const data = await res.data;
+				data.forEach((ele) => {
+					let contributorDiv = document.createElement('div');
+					contributorDiv.id = 'contributorDiv';
+					let h4 = createAndAppend('h4', contributorDiv);
+					let h5 = createAndAppend('h5', contributorDiv);
+					let img = createAndAppend('img', contributorDiv);
+					h4.innerText = ele.login;
+					h5.innerText = ele.contributions;
+					img.src = ele.avatar_url;
+					sectionContributor.appendChild(contributorDiv);
 				});
+			}
+			getData();
+
 			let ul = createAndAppend('ul', repo);
 			renderRepoDetails(byData[select.value], ul);
 		});
@@ -100,20 +100,12 @@
 			contributor.removeChild(contributor.lastChild);
 		}
 	}
-	// function main(url) {
-	// 	fetch(url).then((res) => res.json()).then((data) => data).catch((err) => {
-	// 		createAndAppend('div', root, {
-	// 			text: err.message,
-	// 			class: 'alert-error'
-	// 		});
-	// 	});
-	// 	contributorDetail(url);
-	// 	renderRepoDetails(repo, ul);
-	// }
 
 	async function main(url) {
 		try {
-			await fetch(url).then((res) => res.json()).then((data) => data);
+			const res = await axios.get(url);
+			const data = await res;
+			console.log(data);
 		} catch (err) {
 			createAndAppend('div', root, {
 				text: err.message,

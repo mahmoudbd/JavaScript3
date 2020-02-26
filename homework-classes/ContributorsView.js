@@ -29,21 +29,19 @@
 					class: 'contributorsDiv'
 				});
 
-				const contArray = [ ele.avatar_url, ele.login, ele.contributions ];
-
 				const div = createAndAppend('div', contributorsDiv, {
-					class: 'ImgDiv'
+					class: 'imgDiv'
 				});
 				const img = createAndAppend('img', div);
 
-				img.src = contArray[0];
+				img.src = ele.avatar_url;
 
 				const loginDiv = createAndAppend('div', contributorsDiv, {
 					class: 'login'
 				});
 
 				createAndAppend('a', loginDiv, {
-					text: contArray[1],
+					text: ele.login,
 					href: ele.html_url,
 					target: '_blank'
 				});
@@ -51,7 +49,7 @@
 				const buttonDiv = createAndAppend('div', contributorsDiv, {
 					class: 'buttonDiv'
 				});
-				createAndAppend('button', buttonDiv, { text: contArray[2] });
+				createAndAppend('button', buttonDiv, { text: ele.contributions });
 			});
 
 			console.log('ContributorsView', contributors);
