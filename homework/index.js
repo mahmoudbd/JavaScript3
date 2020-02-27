@@ -3,7 +3,7 @@
 	async function fetchJSON(url) {
 		try {
 			const res = await axios.get(url);
-			const data = await res;
+			const data = await res.data;
 			return data;
 		} catch (err) {
 			console.log(`There is an error ${err}`);
